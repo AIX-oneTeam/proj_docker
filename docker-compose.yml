@@ -1,0 +1,38 @@
+# docker-compose.yml
+version: '3'
+
+services:
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - ./backend:/app
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=counter_db
+      - MYSQL_USER=count
+      - MYSQL_PASSWORD=count
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./count_db.sql:/docker-entrypoint-initdb.d/count_db.sql
+
+volumes:
+  mysql_data:
