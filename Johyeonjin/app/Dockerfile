@@ -1,6 +1,9 @@
 FROM python:3.12-slim
 
 WORKDIR /app
-RUN pip install -r requirements.txt
-ENTRYPOINT [ "fastapi","run","main.py" ]
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 VOLUME [ "/app" ]
+COPY . .
+
+
