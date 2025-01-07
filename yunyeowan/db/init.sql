@@ -1,0 +1,10 @@
+CREATE DATABASE IF NOT EXISTS counter_db;
+
+USE counter_db;
+
+CREATE TABLE counter (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    value INT NOT NULL DEFAULT 0
+);
+
+INSERT INTO counter (value) VALUES (0);
