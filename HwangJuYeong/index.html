@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="ko"> <!-- 한국어문서, 음성지원할때 -->
+    <head>
+        <meta charset="UTF-8"><!--브라우저가 문서를해석할때 한글을 UTF-8형식으로 해석-->
+        <title>CounterApp</title>
+    </head>
+
+    <body>
+        <h1>CounterApp</h1>
+        <h2 id="count">0</h2>
+        <div>
+            <button onclick="updateCount('increment')">증가</button>
+            <button onclick="updateCount('decrement')">감소</button>
+        </div>
+    
+        <script>
+            async function fetchCount() {
+                const response = await fetch('http://localhost:8000/count');
+                const data = await response.json();
+                document.getElementById('count').textContent = data.count;
+            }
+    
+            async function updateCount(action) {
+                await fetch(`http://localhost:8000/${action}`, { method: 'POST' });
+                fetchCount();
+            }
+    
+            // 초기 카운트 가져오기
+            fetchCount();
+        </script>
+    </body>
+</html>
