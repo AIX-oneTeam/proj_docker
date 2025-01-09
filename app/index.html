@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Controller</title>
+</head>
+<body>
+    <h1>Current Value: {{ number }}</h1>
+    <form action="/update" method="post">
+        <button name="cal" value="increment" type="submit">Increment</button>
+        <button name="cal" value="decrement" type="submit">Decrement</button>
+    </form>
+</body>
+</html>
