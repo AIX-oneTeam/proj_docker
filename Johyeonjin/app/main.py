@@ -8,32 +8,21 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 # Jinja2 템플릿 엔진 사용을 위한 클래스
 from fastapi.templating import Jinja2Templates
 # python ORM인 sqlalchemy를 이용해 엔티티 작성
-from sqlalchemy import MetaData, select, update
-# sqlalchemy의 비동기 엔진 임포트
-from sqlalchemy.ext.asyncio import create_async_engine
-from data_model import count_table
 
 # MySQL 데이터베이스 URL
 # mysql+asyncmy://유저이름:비밀번호@호스트주소/데이터베이스이름
 DATABASE_URL = "mysql+asyncmy://fastapi:fastapi@db:3306/test"
 database = Database(DATABASE_URL)
-metadata = MetaData()
-
-# 비동기 엔진 생성
-async_engine = create_async_engine(DATABASE_URL, echo=True)
-
-async def init_db():
-    async with async_engine.begin() as conn:
-        await conn.run_sync(metadata.create_all)
 
 # FastAPI 애플리케이션 수명 주기 관리
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
         await database.connect()  # 데이터베이스 연결
-        await init_db()  # 스키마 생성
+        await database.execute("USE test;") 
+        print("Connecting to database")
     except Exception as e:
-        print(e)
+        print("Error during initialization", e)
     yield
     await database.disconnect()  # 연결 해제
 
@@ -48,7 +37,9 @@ templates = Jinja2Templates(directory="templates")
 # request 인자는 FastAPI에서 자동으로 주입해줌.
 # fastapi는 request객체를 직접 사용해야함.
 async def read_root(request: Request):
-    query = select(count_table.c.count).where(count_table.c.id == 1)
+    query = "SELECT * FROM count_table WHERE id = 1"
+    if not database.is_connected:
+        await database.connect()
     result = await database.fetch_one(query) 
 
     # TemplatesReponse는 ModelAndView와 같은 역할을 함.
@@ -60,12 +51,13 @@ async def read_root(request: Request):
 
 @app.post("/update", response_class=HTMLResponse)
 async def update_count(action : str = Form(...)):
-
+    if not database.is_connected:
+        await database.connect()
     if(action == "increase"):
-        query = update(count_table).where(count_table.c.id == 1).values(count=count_table.c.count + 1)
+        query = "UPDATE count_table SET count = count + 1 WHERE id = 1"
         await database.execute(query)   
     elif(action == "decrease"):
-        query = update(count_table).where(count_table.c.id == 1).values(count=count_table.c.count - 1)
+        query = "UPDATE count_table SET count = count - 1 WHERE id = 1"
         await database.execute(query)
 
     return RedirectResponse(url = "/", status_code=303)
