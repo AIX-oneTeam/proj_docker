@@ -1,0 +1,30 @@
+services:
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test
+      MYSQL_USER: fastapi
+      MYSQL_PASSWORD: fastapi
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql
+    command: --bind-address=0.0.0.0
+
+  fastapi:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - ./app:/app
+
+volumes:
+  mysql_data:

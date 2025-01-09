@@ -1,0 +1,8 @@
+CREATE DATABASE IF NOT EXISTS test;
+USE test;
+
+CREATE TABLE IF NOT EXISTS count_table (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    count INT DEFAULT 0
+);
+INSERT INTO count_table (count) VALUES (0);
