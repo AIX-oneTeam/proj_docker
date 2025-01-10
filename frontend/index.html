@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"> <!-- UTF-8 문자 인코딩 설정 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter App</title>
+</head>
+<body>
+    <h1>현재 카운터: <span id="count">0</span></h1>
+    <button onclick="updateCount('increment')">+</button>
+    <button onclick="updateCount('decrement')">-</button>
+
+    <script>
+        // API 호출 후 카운터 값을 업데이트
+        async function updateCount(action) {
+            const response = await fetch(`http://localhost:5000/${action}`, { method: "POST" });
+            const data = await response.json();
+            document.getElementById("count").innerText = data.count;
+        }
+
+        // 페이지 로드 시 현재 카운터 값을 가져옴
+        async function getCount() {
+            const response = await fetch("http://localhost:5000/count");
+            const data = await response.json();
+            document.getElementById("count").innerText = data.count;
+        }
+
+        // 페이지 로드 시 초기 값 설정
+        window.onload = getCount;
+    </script>
+</body>
+</html>
