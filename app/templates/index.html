@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Controller</title>
+    <script>
+        function updateCounter(cal) {
+            fetch('/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({ cal: cal }) 
+            })
+            .then(response => response.json())  
+            .then(data => {
+                document.getElementById('counter-value').innerText = data.number;
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Current Value: <span id="counter-value">{{ number }}</span></h1> 
+    <button onclick="updateCounter('increment')">Increment</button>
+    <button onclick="updateCounter('decrement')">Decrement</button>
+</body>
+</html>
