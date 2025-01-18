@@ -16,6 +16,7 @@ name = os.environ.get("MYSQL_DATABASE")
 # DB 연결 URL
 DB_URL = f'mysql+pymysql://{user}:{password}@{host}:{port}/{name}'
 
+
 # SQLAlchemy 엔진 생성
 engine = create_engine(DB_URL, echo=True)
 
