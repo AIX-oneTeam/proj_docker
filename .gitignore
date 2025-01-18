@@ -3,9 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+<<<<<<< HEAD
 proj_docker/
 __pycache__/
 
+=======
+>>>>>>> ecfbca54134428901fe6edbee20b7ce95c84f09d
 # C extensions
 *.so
 
